@@ -1,4 +1,6 @@
-﻿namespace Lib1
+﻿using System;
+using System.Windows.Forms;
+namespace Lib1
 {
     partial class UserControl1
     {
@@ -33,6 +35,8 @@
             this.trackBar2 = new System.Windows.Forms.TrackBar();
             this.button1 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.button2 = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
@@ -97,10 +101,32 @@
             this.label1.Text = "label1";
             this.label1.Visible = false;
             // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(162, 105);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.TabIndex = 6;
+            this.button2.Text = "Добавить";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(199, 272);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(75, 23);
+            this.button3.TabIndex = 7;
+            this.button3.Text = "Удалить";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
             // UserControl1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.button3);
+            this.Controls.Add(this.button2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.trackBar2);
@@ -119,7 +145,64 @@
             this.PerformLayout();
 
         }
+        int N = 0, pow;
+        //double[] TextCoeff;
+        TextBox[] textBox = new TextBox[100];
+        double[] TextCoeff = new double[100];
+        Label[] label = new Label[100];
+        private void AddTextBox()
+        { 
+            textBox[N] = new TextBox();
+            textBox[N].Left = trackBar2.Left + trackBar2.Width;
+            textBox[N].Top = 5 + N * 25;
+            textBox[N].Name = string.Format("textBox" + N);
+            textBox[N].Size = new System.Drawing.Size(60, 20);
+            textBox[N].TabIndex = 8 + 2*N;
+            //textBox[i].Text = string.Format(""+textBox[i].TabIndex);
+            this.Controls.Add(textBox[N]);
+            
+            label[N] = new Label();
+            label[N].AutoSize = true;
+            label[N].Left = textBox[N].Left + textBox[N].Width + 2;
+            label[N].Top = 5 + N * 25;
+            label[N].Name = string.Format("label" + N);
+            label[N].Size = new System.Drawing.Size(35, 13);
+            label[N].TabIndex = textBox[N].TabIndex + N;
+            label[N].Text = string.Format("X" + N);
+            this.Controls.Add(label[N]);
+            for (int i = 0; i < N; i++)
+            {
+                pow = N - i;
+                label[i].Text = string.Format("X" + pow);
+                label[N].Text = string.Format("X" + 0);
+            }
 
+            N++;
+        }
+        
+        private void DeleteTextBox()
+        {
+            try
+            {
+                this.Controls.Remove(textBox[N - 1]);
+                textBox[N - 1].Dispose();
+                this.Controls.Remove(label[N - 1]);
+                label[N - 1].Dispose();
+            }
+            catch (System.IndexOutOfRangeException)
+            {
+                return;
+            }
+            
+            N--;
+
+            for (int i = 0; i < N; i++)
+            {
+                pow = N - 1 - i;
+                label[i].Text = string.Format("X" + pow);
+                label[N-1].Text = string.Format("X" + 0);
+            }
+        }
         #endregion
 
         private System.Windows.Forms.PictureBox pictureBox1;
@@ -127,5 +210,7 @@
         private System.Windows.Forms.TrackBar trackBar2;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button3;
     }
 }

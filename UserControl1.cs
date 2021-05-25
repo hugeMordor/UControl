@@ -50,6 +50,17 @@ namespace Lib1
             ReDrawPicture();
         }
 
+        private void button2_Click(object sender, EventArgs e)
+        {
+            AddTextBox();
+            
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            DeleteTextBox();
+        }
+
         public void SetBaseRectangle(double X, double Y, double L, double H)
         {
             XminBase = X;
@@ -67,7 +78,7 @@ namespace Lib1
             y = (-e.Y + BM.Height - Ky * Ymin) / Ky;
             //Yscr = BM.Height-Ky*(y-Ymin)
             //y*Ky = -Yscr + BM.H - Ky*Ymin
-            label1.Text = String.Format("( {0:f2}, {1:f2})", x, y);
+            label1.Text = string.Format("( {0:f2}, {1:f2})", x, y);
             if (e.Button == MouseButtons.Left)
             {
 
@@ -139,44 +150,35 @@ namespace Lib1
         {
             pictureBox1.Left = 0;
             pictureBox1.Top = 0;
-            pictureBox1.Width = this.Width - 50;
-            pictureBox1.Height = this.Height - 50;
-
+            pictureBox1.Width = this.Width - 130;
+            pictureBox1.Height = this.Height - 130;
 
             trackBar1.Left = 0;
             trackBar1.Top = pictureBox1.Height + 5;
             trackBar1.Width = pictureBox1.Width;
-
+            trackBar1.Height = 20;
 
             trackBar2.Left = pictureBox1.Width + 5;
             trackBar2.Top = 0;
             trackBar2.Height = pictureBox1.Height;
+            trackBar2.Width = 20;
 
             button1.Left = pictureBox1.Width + 5;
             button1.Top = pictureBox1.Height + 5;
             button1.Width = 40; button1.Height = 40;
+
+            button2.Top = trackBar1.Top + trackBar1.Height;
+            button2.Left = 0;
+            button2.Width = 75; button2.Height = 25;
+
+            button3.Top = trackBar1.Top + trackBar1.Height;
+            button3.Left = button2.Width + 5;
+            button3.Width = 75; button3.Height = 25;
         }
 
         private void UserControl1_Resize(object sender, EventArgs e)
         {
-            pictureBox1.Left = 0;
-            pictureBox1.Top = 0;
-            pictureBox1.Width = this.Width - 50;
-            pictureBox1.Height = this.Height - 50;
-
-
-            trackBar1.Left = 0;
-            trackBar1.Top = pictureBox1.Height + 5;
-            trackBar1.Width = pictureBox1.Width;
-
-
-            trackBar2.Left = pictureBox1.Width + 5;
-            trackBar2.Top = 0;
-            trackBar2.Height = pictureBox1.Height;
-
-            button1.Left = pictureBox1.Width + 5;
-            button1.Top = pictureBox1.Height + 5;
-            button1.Width = 40;button1.Height = 40;
+            UserControl1_Load(sender, e);
         }
 
         public void InitGraph()
@@ -278,13 +280,14 @@ namespace Lib1
             penCell.Dispose();
             ReDrawPicture();
         }
-        public void AddGraph(int N, double[] A, Color cl, int W)
+        public void AddGraph(Color cl, int W)
         {
-            degree = N;
-            Coeff = new double[N + 1];
-            for (int i = 0; i <= N; i++)
+            
+            degree = N - 1;
+            Coeff = new double[N];
+            for (int i = 0; i < N; i++)
             {
-                Coeff[i] = A[i];
+                Coeff[i] = double.Parse(textBox[i].Text);
             }
             PenGraph = new Pen(cl, W);
             FlagGraph = true;
