@@ -38,9 +38,40 @@ namespace Lib1
         double x, y;
         double XXX;
         int X1scr, Y1scr, X2scr, Y2scr;
-        double Yscr;
+        //double Yscr;
         double K = 1;
 
+        bool PointFlag = false;
+        int PointNum = 0;
+        double[] PointX, PointY;
+        SolidBrush PointBrush;
+        public int PointType = 0, PointSize = 3;
+
+        public void AddPoint(int N, double[] PointXtemp, double[] PointYtemp, Color cl)
+        {
+            PointFlag = true;
+            PointX = new double[N];
+            PointY = new double[N];
+            PointBrush = new SolidBrush(cl);
+            PointNum = N;
+            for (int i = 0; i < N; i++)
+            {
+                PointX[i] = PointXtemp[i];
+                PointY[i] = PointYtemp[i];
+            }
+            ReDrawPicture();
+        }
+        public void DeletePoint()
+        {
+            if (PointFlag)
+            {
+                PointFlag = false;
+                PointBrush.Dispose();
+                Array.Clear(PointX, 0, PointNum);
+                Array.Clear(PointY, 0, PointNum);
+                ReDrawPicture();
+            }
+        }
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -71,6 +102,7 @@ namespace Lib1
 
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
         {
+            
             Xm2 = e.X; Ym2 = e.Y;
             label1.Left = e.X + 10;
             label1.Top = e.Y + 10;
@@ -130,8 +162,12 @@ namespace Lib1
 
         private void pictureBox1_MouseWheel(object sender, MouseEventArgs e)
         {
-            K *= Pow(1.1, e.Delta/100);
-            ReDrawPicture();
+            if (FlagGraph || PointFlag)
+            {
+                K *= Pow(1.1, e.Delta / 100);
+                ReDrawPicture();
+                label1.Text = string.Format("( {0:f2}, {1:f2})", x, y);
+            }
         }
 
         
@@ -255,6 +291,39 @@ namespace Lib1
                     Y1scr = Y2scr;
                 }
             }
+            if (PointFlag)
+            {
+                Xmin = (XminBase + XmaxBase) / 2 - ((XmaxBase - XminBase) / 2) * K * Pow(1.1, trackBar1.Value);
+                Xmax = (XminBase + XmaxBase) / 2 + ((XmaxBase - XminBase) / 2) * K * Pow(1.1, trackBar1.Value);
+                Ymin = (YminBase + YmaxBase) / 2 - ((YmaxBase - YminBase) / 2) * K * Pow(1.1, trackBar2.Value);
+                Ymax = (YminBase + YmaxBase) / 2 + ((YmaxBase - YminBase) / 2) * K * Pow(1.1, trackBar2.Value);
+                Kx = BM.Width / (Xmax - Xmin);
+                Ky = BM.Height / (Ymax - Ymin);
+                for (int i = 0; i < PointNum; i++)
+                {
+                    int Xscr = (int)(Kx * (PointX[i] - Xmin));
+                    int Yscr = (int)(BM.Height - Ky * (PointY[i] - Ymin));
+                    switch (PointType)
+                    {
+                        case 0:
+                            Gr.FillEllipse(PointBrush, (int)(Xscr-PointSize+Xmouse), (int)(Yscr-PointSize+Ymouse), 2*PointSize, 2*PointSize);
+                            break;
+                        case 1:
+                            Gr.FillRectangle(PointBrush, (int)(Xscr - PointSize + Xmouse), (int)(Yscr - PointSize + Ymouse), 2 * PointSize, 2 * PointSize);
+                            break;
+                        case 2:
+                            Point[] Triangle = new Point[3];
+                            Triangle[0].X = (int)(Xscr - PointSize + Xmouse);
+                            Triangle[0].Y = (int)(Yscr + PointSize + Ymouse);
+                            Triangle[1].X = (int)(Xscr + PointSize + Xmouse);
+                            Triangle[1].Y = (int)(Yscr + PointSize + Ymouse);
+                            Triangle[2].X = (int)(Xscr + Xmouse);
+                            Triangle[2].Y = (int)(Yscr - PointSize + Ymouse);
+                            Gr.FillPolygon(PointBrush, Triangle);
+                            break;
+                    }
+                }
+            }
             
 
             pictureBox1.Image = BM;
@@ -276,9 +345,12 @@ namespace Lib1
 
         public void DelCell()
         {
-            flagCell = false;
-            penCell.Dispose();
-            ReDrawPicture();
+            if (flagCell)
+            {
+                flagCell = false;
+                penCell.Dispose();
+                ReDrawPicture();
+            }
         }
         public void AddGraph(Color cl, int W)
         {
