@@ -240,8 +240,8 @@ namespace Lib1
                 //Yscr = BM.Height-Ky*(y-Ymin)
                 Xmin = (XminBase + XmaxBase) / 2 - ((XmaxBase - XminBase) / 2) * K*Pow(1.1, trackBar1.Value);
                 Xmax = (XminBase + XmaxBase) / 2 + ((XmaxBase - XminBase) / 2) * K*Pow(1.1, trackBar1.Value);
-                Ymin = (YminBase + YmaxBase) / 2 - ((YmaxBase - YminBase) / 2) * K*Pow(1.1, trackBar2.Value);
-                Ymax = (YminBase + YmaxBase) / 2 + ((YmaxBase - YminBase) / 2) * K*Pow(1.1, trackBar2.Value);
+                Ymin = 50+(YminBase + YmaxBase) / 2 - ((YmaxBase - YminBase) / 2) * K*Pow(1.1, trackBar2.Value);
+                Ymax = 50+(YminBase + YmaxBase) / 2 + ((YmaxBase - YminBase) / 2) * K*Pow(1.1, trackBar2.Value);
                 Kx = BM.Width / (Xmax - Xmin);
                 Ky = BM.Height / (Ymax - Ymin);
 
